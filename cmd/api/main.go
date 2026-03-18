@@ -31,10 +31,17 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", healthHandler)
 
+	//Products
 	productRepository := repository.NewInMemoryProductRepository()
 	productService := service.NewProductService(productRepository)
 	productHandler := handler.NewProductHandler(productService)
 	mux.HandleFunc("/products", productHandler.HandleProducts)
+
+	//User
+	userRepository := repository.NewInMemoryUsertRepository()
+	userService := service.NewUserService(userRepository)
+	userHandler := handler.NewUserHandler(userService)
+	mux.HandleFunc("/users", userHandler.HandleUsers)
 
 	log.Println("Server running on port", ServerPort)
 	if err := http.ListenAndServe(ServerPort, mux); err != nil {

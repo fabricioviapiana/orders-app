@@ -43,6 +43,12 @@ func main() {
 	userHandler := handler.NewUserHandler(userService)
 	mux.HandleFunc("/users", userHandler.HandleUsers)
 
+	//Orders
+	orderRepository := repository.NewInMemoryOrderRepository()
+	orderService := service.NewOrderService(orderRepository)
+	orderHandler := handler.NewOrderHandler(orderService)
+	mux.HandleFunc("/orders", orderHandler.HandleOrders)
+
 	log.Println("Server running on port", ServerPort)
 	if err := http.ListenAndServe(ServerPort, mux); err != nil {
 		log.Fatal(err)

@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/fabricioviapiana/orders-app/internal/service"
@@ -43,7 +42,6 @@ func (h *userHandler) create(w http.ResponseWriter, r *http.Request) {
 	var createUserInput createUserInput
 
 	if err := json.NewDecoder(r.Body).Decode(&createUserInput); err != nil {
-		fmt.Print(err.Error())
 		respondWithError(w, http.StatusBadRequest, "invalid json")
 		return
 	}

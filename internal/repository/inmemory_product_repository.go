@@ -23,3 +23,12 @@ func (r *inMemoryProductRepository) Create(name string, price float64) domain.Pr
 
 	return newProduct
 }
+
+func (r *inMemoryProductRepository) FindByID(id string) (domain.Product, bool) {
+	for _, product := range products {
+		if product.ID == id {
+			return product, true
+		}
+	}
+	return domain.Product{}, false
+}

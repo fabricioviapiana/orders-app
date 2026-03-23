@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/fabricioviapiana/orders-app/internal/domain"
 	"github.com/fabricioviapiana/orders-app/internal/service"
 )
 
@@ -16,11 +15,6 @@ func NewOrderHandler(service *service.OrderService) *orderHandler {
 	return &orderHandler{
 		service: service,
 	}
-}
-
-type createOrderInput struct {
-	UserID   string           `json:"user_id"`
-	Products []domain.Product `json:"products"`
 }
 
 func (h *orderHandler) HandleOrders(w http.ResponseWriter, r *http.Request) {
@@ -39,6 +33,16 @@ func (h *orderHandler) list(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, orders)
 }
 
+type createOrderItemInput struct {
+	ProductID string `json:"productId"`
+	Quantity  int    `json:"quantity"`
+}
+
+type createOrderInput struct {
+	UserID string                 `json:"userId"`
+	Items  []createOrderItemInput `json:"items"`
+}
+
 func (h *orderHandler) create(w http.ResponseWriter, r *http.Request) {
 	var createOrderInput createOrderInput
 
@@ -47,7 +51,19 @@ func (h *orderHandler) create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newOrder, err := h.service.Create(createOrderInput.UserID, createOrderInput.Products)
+	serviceInput := service.CreateOrderInput{
+		UserID: createOrderInput.UserID,
+		Items:  make([]service.CreateOrderItemInput, len(createOrderInput.Items)),
+	}
+
+	for i, item := range createOrderInput.Items {
+		serviceInput.Items[i] = service.CreateOrderItemInput{
+			ProductID: item.ProductID,
+			Quantity:  item.Quantity,
+		}
+	}
+
+	newOrder, err := h.service.Create(serviceInput)
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, err.Error())
 		return

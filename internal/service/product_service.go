@@ -35,3 +35,7 @@ func (s *ProductService) Create(name string, price float64) (domain.Product, err
 
 	return s.repo.Create(name, price), nil
 }
+
+func (s *ProductService) FindByID(id string) (domain.Product, bool) {
+	return s.repo.FindByID(id)
+}

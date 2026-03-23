@@ -45,7 +45,7 @@ func main() {
 
 	//Orders
 	orderRepository := repository.NewInMemoryOrderRepository()
-	orderService := service.NewOrderService(orderRepository)
+	orderService := service.NewOrderService(orderRepository, productService)
 	orderHandler := handler.NewOrderHandler(orderService)
 	mux.HandleFunc("/orders", orderHandler.HandleOrders)
 

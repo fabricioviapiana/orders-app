@@ -13,11 +13,11 @@ func NewInMemoryOrderRepository() *inMemoryOrderRepository {
 	return &inMemoryOrderRepository{}
 }
 
-func (r *inMemoryOrderRepository) Create(userID string, products []domain.Product, totalAmount float64) domain.Order {
+func (r *inMemoryOrderRepository) Create(userID string, items []domain.OrderItem, totalAmount float64) domain.Order {
 	newOrder := domain.Order{
 		ID:          uuid.NewString(),
 		UserID:      userID,
-		Products:    products,
+		Items:       items,
 		TotalAmount: totalAmount,
 	}
 

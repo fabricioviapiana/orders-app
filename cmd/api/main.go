@@ -38,14 +38,14 @@ func main() {
 	mux.HandleFunc("/products", productHandler.HandleProducts)
 
 	//User
-	userRepository := repository.NewInMemoryUsertRepository()
+	userRepository := repository.NewInMemoryUserRepository()
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
 	mux.HandleFunc("/users", userHandler.HandleUsers)
 
 	//Orders
 	orderRepository := repository.NewInMemoryOrderRepository()
-	orderService := service.NewOrderService(orderRepository, productService)
+	orderService := service.NewOrderService(orderRepository, productService, userService)
 	orderHandler := handler.NewOrderHandler(orderService)
 	mux.HandleFunc("/orders", orderHandler.HandleOrders)
 

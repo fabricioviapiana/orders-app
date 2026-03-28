@@ -9,7 +9,7 @@ var users = []domain.User{}
 
 type inMemoryUserRepository struct{}
 
-func NewInMemoryUsertRepository() *inMemoryUserRepository {
+func NewInMemoryUserRepository() *inMemoryUserRepository {
 	return &inMemoryUserRepository{}
 }
 
@@ -22,4 +22,14 @@ func (r *inMemoryUserRepository) Create(name, email string) domain.User {
 	users = append(users, newUser)
 
 	return newUser
+}
+
+func (r *inMemoryUserRepository) FindByID(id string) (domain.User, bool) {
+	for _, user := range users {
+		if user.ID == id {
+			return user, true
+		}
+	}
+
+	return domain.User{}, false
 }

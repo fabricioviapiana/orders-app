@@ -38,3 +38,7 @@ func (s *UserService) Create(name, email string) (*domain.User, error) {
 func (s *UserService) List() []domain.User {
 	return s.repo.List()
 }
+
+func (s *UserService) FindByID(id string) (domain.User, bool) {
+	return s.repo.FindByID(id)
+}

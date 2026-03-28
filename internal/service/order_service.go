@@ -12,15 +12,21 @@ type productService interface {
 	FindByID(id string) (domain.Product, bool)
 }
 
+type userService interface {
+	FindByID(id string) (domain.User, bool)
+}
+
 type OrderService struct {
 	orderRepository repository.OrderRepository
 	productService  productService
+	userService     userService
 }
 
-func NewOrderService(orderRepository repository.OrderRepository, productService productService) *OrderService {
+func NewOrderService(orderRepository repository.OrderRepository, productService productService, userService userService) *OrderService {
 	return &OrderService{
 		orderRepository: orderRepository,
 		productService:  productService,
+		userService:     userService,
 	}
 }
 
@@ -43,14 +49,24 @@ func (s *OrderService) Create(input CreateOrderInput) (*domain.Order, error) {
 		return nil, errors.New("Order must have at least one product")
 	}
 
+	_, ok := s.userService.FindByID(input.UserID)
+	if !ok {
+		return nil, fmt.Errorf("user %s not found", input.UserID)
+	}
+
 	var totalAmount float64
 	var orderItems []domain.OrderItem
 
 	for _, item := range input.Items {
+		if item.Quantity <= 0 {
+			return nil, fmt.Errorf("products must have quantity greather than 0")
+		}
+
 		product, ok := s.productService.FindByID(item.ProductID)
 		if !ok {
 			return nil, fmt.Errorf("product %s not found", item.ProductID)
 		}
+
 		orderItems = append(orderItems, domain.OrderItem{
 			ProductID: product.ID,
 			Quantity:  item.Quantity,

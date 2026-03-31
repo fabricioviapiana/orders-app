@@ -25,6 +25,10 @@ func (h *ProductHandler) HandleProducts(w http.ResponseWriter, r *http.Request) 
 	case http.MethodPost:
 		h.create(w, r)
 	case http.MethodGet:
+		if id := r.PathValue("id"); id != "" {
+			h.find(w, r)
+			return
+		}
 		h.list(w, r)
 	default:
 		http.Error(w, "Method not supported", http.StatusMethodNotAllowed)
@@ -60,4 +64,19 @@ func (h *ProductHandler) create(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+func (h *ProductHandler) find(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if id == "" {
+		respondWithError(w, http.StatusBadRequest, "missing product id")
+		return
+	}
+
+	product, ok := h.service.FindByID(id)
+	if !ok {
+		respondWithError(w, http.StatusNotFound, "not found")
+		return
+	}
+	respondWithJSON(w, http.StatusOK, product)
 }

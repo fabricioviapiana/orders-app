@@ -35,7 +35,9 @@ func main() {
 	productRepository := repository.NewInMemoryProductRepository()
 	productService := service.NewProductService(productRepository)
 	productHandler := handler.NewProductHandler(productService)
-	mux.HandleFunc("/products", productHandler.HandleProducts)
+	mux.HandleFunc("GET /products", productHandler.HandleProducts)
+	mux.HandleFunc("POST /products", productHandler.HandleProducts)
+	mux.HandleFunc("GET /products/{id}", productHandler.HandleProducts)
 
 	//User
 	userRepository := repository.NewInMemoryUserRepository()

@@ -9,7 +9,17 @@ import (
 
 // Mock para o UserService usando o ISP
 type mockUserService struct {
-	findFunc func(id string) (domain.User, bool)
+	createFunc func(name, email string) (domain.User, error)
+	listFunc   func() []domain.User
+	findFunc   func(id string) (domain.User, bool)
+}
+
+func (m *mockUserService) Create(name, email string) (domain.User, error) {
+	return m.createFunc(name, email)
+}
+
+func (m *mockUserService) List() []domain.User {
+	return m.listFunc()
 }
 
 func (m *mockUserService) FindByID(id string) (domain.User, bool) {

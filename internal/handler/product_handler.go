@@ -36,7 +36,11 @@ func (h *ProductHandler) HandleProducts(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h *ProductHandler) list(w http.ResponseWriter, r *http.Request) {
-	products := h.service.List()
+	products, err := h.service.List()
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(products); err != nil {
@@ -73,8 +77,8 @@ func (h *ProductHandler) find(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	product, ok := h.service.FindByID(id)
-	if !ok {
+	product, err := h.service.FindByID(id)
+	if err != nil {
 		respondWithError(w, http.StatusNotFound, "not found")
 		return
 	}

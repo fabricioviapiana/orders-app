@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/fabricioviapiana/orders-app/internal/domain"
@@ -10,19 +11,19 @@ import (
 // Mock para o UserService usando o ISP
 type mockUserService struct {
 	createFunc func(name, email string) (domain.User, error)
-	listFunc   func() []domain.User
-	findFunc   func(id string) (domain.User, bool)
+	listFunc   func() ([]domain.User, error)
+	findFunc   func(id string) (domain.User, error)
 }
 
 func (m *mockUserService) Create(name, email string) (domain.User, error) {
 	return m.createFunc(name, email)
 }
 
-func (m *mockUserService) List() []domain.User {
+func (m *mockUserService) List() ([]domain.User, error) {
 	return m.listFunc()
 }
 
-func (m *mockUserService) FindByID(id string) (domain.User, bool) {
+func (m *mockUserService) FindByID(id string) (domain.User, error) {
 	return m.findFunc(id)
 }
 
@@ -34,21 +35,21 @@ func TestOrderService_Create(t *testing.T) {
 
 	// Mock do UserService
 	userSvc := &mockUserService{
-		findFunc: func(id string) (domain.User, bool) {
+		findFunc: func(id string) (domain.User, error) {
 			users := map[string]domain.User{
 				"user-123": {ID: "user-123"},
 			}
 			user, ok := users[id]
 			if ok {
-				return user, true
+				return user, nil
 			}
-			return domain.User{}, false
+			return domain.User{}, fmt.Errorf("error")
 		},
 	}
 
 	// Criando um produto para o teste
-	p1 := productRepo.Create("Teclado Mecânico", 250.0)
-	p2 := productRepo.Create("Mouse Gamer", 150.0)
+	p1, _ := productRepo.Create("Teclado Mecânico", 250.0)
+	p2, _ := productRepo.Create("Mouse Gamer", 150.0)
 
 	// Agora passamos os 3 argumentos
 	s := NewOrderService(orderRepo, productSvc, userSvc)

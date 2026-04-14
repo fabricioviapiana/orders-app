@@ -93,6 +93,7 @@ Sempre que fizer sentido:
 - revisar código
 - explicar conceitos com exemplos simples
 - conectar teoria com prática
+- conectar o conceito com clean architecture, exemplificando de forma clara
 
 ---
 

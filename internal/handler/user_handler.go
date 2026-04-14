@@ -34,7 +34,11 @@ func (h *userHandler) HandleUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *userHandler) list(w http.ResponseWriter, r *http.Request) {
-	users := h.service.List()
+	users, err := h.service.List()
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 	respondWithJSON(w, http.StatusOK, users)
 }
 

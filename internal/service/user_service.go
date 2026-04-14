@@ -30,15 +30,15 @@ func (s *UserService) Create(name, email string) (*domain.User, error) {
 		return nil, errors.New("Email is missing")
 	}
 
-	newUser := s.repo.Create(name, email)
+	newUser, err := s.repo.Create(name, email)
 
-	return &newUser, nil
+	return &newUser, err
 }
 
-func (s *UserService) List() []domain.User {
+func (s *UserService) List() ([]domain.User, error) {
 	return s.repo.List()
 }
 
-func (s *UserService) FindByID(id string) (domain.User, bool) {
+func (s *UserService) FindByID(id string) (domain.User, error) {
 	return s.repo.FindByID(id)
 }

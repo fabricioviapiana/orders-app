@@ -18,7 +18,7 @@ func NewProductService(repo repository.ProductRepository) *ProductService {
 	}
 }
 
-func (s *ProductService) List() []domain.Product {
+func (s *ProductService) List() ([]domain.Product, error) {
 	return s.repo.List()
 }
 
@@ -33,9 +33,9 @@ func (s *ProductService) Create(name string, price float64) (domain.Product, err
 		return domain.Product{}, errors.New("Price must be greater than zero")
 	}
 
-	return s.repo.Create(name, price), nil
+	return s.repo.Create(name, price)
 }
 
-func (s *ProductService) FindByID(id string) (domain.Product, bool) {
+func (s *ProductService) FindByID(id string) (domain.Product, error) {
 	return s.repo.FindByID(id)
 }

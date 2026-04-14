@@ -7,32 +7,32 @@ import (
 )
 
 type mockUserRepository struct {
-	createFunc func(name, email string) domain.User
-	listFunc   func() []domain.User
-	findFunc   func(id string) (domain.User, bool)
+	createFunc func(name, email string) (domain.User, error)
+	listFunc   func() ([]domain.User, error)
+	findFunc   func(id string) (domain.User, error)
 }
 
-func (m *mockUserRepository) Create(name, email string) domain.User {
+func (m *mockUserRepository) Create(name, email string) (domain.User, error) {
 	return m.createFunc(name, email)
 }
 
-func (m *mockUserRepository) List() []domain.User {
+func (m *mockUserRepository) List() ([]domain.User, error) {
 	return m.listFunc()
 }
 
-func (m *mockUserRepository) FindByID(id string) (domain.User, bool) {
+func (m *mockUserRepository) FindByID(id string) (domain.User, error) {
 	return m.findFunc(id)
 }
 
 func TestUserService_Create(t *testing.T) {
 	t.Run("should create a user successfuly when data is valid", func(t *testing.T) {
 		userRepoMock := &mockUserRepository{
-			createFunc: func(name, email string) domain.User {
+			createFunc: func(name, email string) (domain.User, error) {
 				return domain.User{
 					ID:    "abc",
 					Name:  name,
 					Email: email,
-				}
+				}, nil
 			},
 		}
 

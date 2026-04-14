@@ -29,7 +29,11 @@ func (h *orderHandler) HandleOrders(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *orderHandler) list(w http.ResponseWriter, r *http.Request) {
-	orders := h.service.List()
+	orders, err := h.service.List()
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 	respondWithJSON(w, http.StatusOK, orders)
 }
 

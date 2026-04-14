@@ -9,11 +9,11 @@ import (
 )
 
 type productService interface {
-	FindByID(id string) (domain.Product, bool)
+	FindByID(id string) (domain.Product, error)
 }
 
 type userService interface {
-	FindByID(id string) (domain.User, bool)
+	FindByID(id string) (domain.User, error)
 }
 
 type OrderService struct {
@@ -49,8 +49,8 @@ func (s *OrderService) Create(input CreateOrderInput) (*domain.Order, error) {
 		return nil, errors.New("Order must have at least one product")
 	}
 
-	_, ok := s.userService.FindByID(input.UserID)
-	if !ok {
+	_, err := s.userService.FindByID(input.UserID)
+	if err != nil {
 		return nil, fmt.Errorf("user %s not found", input.UserID)
 	}
 
@@ -62,8 +62,8 @@ func (s *OrderService) Create(input CreateOrderInput) (*domain.Order, error) {
 			return nil, fmt.Errorf("products must have quantity greather than 0")
 		}
 
-		product, ok := s.productService.FindByID(item.ProductID)
-		if !ok {
+		product, err := s.productService.FindByID(item.ProductID)
+		if err != nil {
 			return nil, fmt.Errorf("product %s not found", item.ProductID)
 		}
 
@@ -75,11 +75,18 @@ func (s *OrderService) Create(input CreateOrderInput) (*domain.Order, error) {
 		totalAmount += product.Price * float64(item.Quantity)
 	}
 
-	newOrder := s.orderRepository.Create(input.UserID, orderItems, totalAmount)
+	newOrder, err := s.orderRepository.Create(input.UserID, orderItems, totalAmount)
+	if err != nil {
+		return nil, err
+	}
 
 	return &newOrder, nil
 }
 
-func (s *OrderService) List() []domain.Order {
+func (s *OrderService) List() ([]domain.Order, error) {
 	return s.orderRepository.List()
+}
+
+func (s *OrderService) FindByID(id string) (domain.Order, error) {
+	return s.orderRepository.FindByID(id)
 }

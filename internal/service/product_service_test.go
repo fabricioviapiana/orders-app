@@ -1,26 +1,27 @@
 package service
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/fabricioviapiana/orders-app/internal/domain"
 )
 
 type mockProductRepository struct {
-	createFunc   func(name string, price float64) domain.Product
-	listFunc     func() []domain.Product
-	findByIDFunc func(id string) (domain.Product, bool)
+	createFunc   func(name string, price float64) (domain.Product, error)
+	listFunc     func() ([]domain.Product, error)
+	findByIDFunc func(id string) (domain.Product, error)
 }
 
-func (m *mockProductRepository) Create(name string, price float64) domain.Product {
+func (m *mockProductRepository) Create(name string, price float64) (domain.Product, error) {
 	return m.createFunc(name, price)
 }
 
-func (m *mockProductRepository) List() []domain.Product {
+func (m *mockProductRepository) List() ([]domain.Product, error) {
 	return m.listFunc()
 }
 
-func (m *mockProductRepository) FindByID(id string) (domain.Product, bool) {
+func (m *mockProductRepository) FindByID(id string) (domain.Product, error) {
 	return m.findByIDFunc(id)
 }
 
@@ -28,8 +29,8 @@ func TestProductService_Create(t *testing.T) {
 	t.Run("should create product successfuly when data is valid", func(t *testing.T) {
 		// Setup mock
 		repository := &mockProductRepository{
-			createFunc: func(name string, price float64) domain.Product {
-				return domain.Product{ID: "1", Name: name, Price: price}
+			createFunc: func(name string, price float64) (domain.Product, error) {
+				return domain.Product{ID: "1", Name: name, Price: price}, nil
 			},
 		}
 
@@ -73,14 +74,14 @@ func TestProductService_Create(t *testing.T) {
 
 func TestProductService_FindByID(t *testing.T) {
 	mockedRepo := &mockProductRepository{
-		findByIDFunc: func(id string) (domain.Product, bool) {
+		findByIDFunc: func(id string) (domain.Product, error) {
 			products := map[string]domain.Product{
 				"1": {ID: "1", Name: "Monitor 4k", Price: 12.0},
 			}
 			if p, ok := products[id]; ok {
-				return p, true
+				return p, nil
 			}
-			return domain.Product{}, false
+			return domain.Product{}, fmt.Errorf("error")
 		},
 	}
 	t.Run("should find product by id", func(t *testing.T) {
@@ -88,8 +89,8 @@ func TestProductService_FindByID(t *testing.T) {
 		service := NewProductService(mockedRepo)
 
 		// Action
-		p, ok := service.FindByID("1")
-		if !ok || p.ID != "1" {
+		p, err := service.FindByID("1")
+		if err != nil || p.ID != "1" {
 			t.Error("expected to find product with ID 1")
 		}
 	})
@@ -99,8 +100,8 @@ func TestProductService_FindByID(t *testing.T) {
 		service := NewProductService(mockedRepo)
 
 		// Action
-		_, ok := service.FindByID("2")
-		if ok {
+		_, err := service.FindByID("2")
+		if err != nil {
 			t.Error("expected not to find product ID 2")
 		}
 	})

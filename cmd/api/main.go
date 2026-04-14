@@ -28,6 +28,17 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	dsn := "postgres://user:password@localhost:5432/orders_db?sslmode=disable"
+	db, err := repository.NewDB(dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	if err := repository.RunMigrations(db); err != nil {
+		log.Fatal(err)
+	}
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", healthHandler)
 

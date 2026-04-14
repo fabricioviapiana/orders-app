@@ -112,11 +112,13 @@ internal/repository → armazenamento
 ## 🧪 Estado atual
 
 - API funcional com net/http
-- persistência em transição (em memória -> SQL)
-- separação em camadas aplicada
+- Persistência em transição (em memória -> SQL)
+- **Interfaces de Repositório atualizadas para retornar `error`**
+- **Services e Handlers refatorados para propagar erros adequadamente**
+- **Auto-Migrations configuradas com Goose (PostgreSQL)**
 - Docker configurado (Postgres 16)
-- Infraestrutura de conexão ao banco criada (internal/repository/db.go)
-- Fase 2 em progresso
+- Infraestrutura de conexão ao banco integrada ao `main.go`
+- Fase 2 em progresso (Infra pronta, falta implementar os Repositories SQL)
 
 ---
 

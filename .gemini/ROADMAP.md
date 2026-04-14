@@ -25,20 +25,21 @@ Guiar a evolução do projeto de forma incremental até um nível avançado de b
 
 ---
 
-## 🚧 Fase 2 — Persistência (próxima)
+## 🚧 Fase 2 — Persistência (em progresso)
 
 Objetivo:
 
 - substituir armazenamento em memória por banco real
 
-Aprendizados:
+Status:
 
-- SQL
-- modelagem relacional
-- repository real
-- migrations
-- conexão com banco
-- tratamento de erros de banco
+- [x] Configurar Docker/Postgres
+- [x] Refatorar interfaces para suportar `error`
+- [x] Implementar Auto-Migrations (Goose)
+- [ ] Criar PostgresUserRepository
+- [ ] Criar PostgresProductRepository
+- [ ] Criar PostgresOrderRepository
+- [ ] Tratamento de erros de banco
 
 ---
 

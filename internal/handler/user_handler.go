@@ -25,6 +25,10 @@ type createUserInput struct {
 func (h *userHandler) HandleUsers(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
+		if id := r.PathValue("id"); id != "" {
+			h.find(w, r)
+			return
+		}
 		h.list(w, r)
 	case http.MethodPost:
 		h.create(w, r)
@@ -57,4 +61,14 @@ func (h *userHandler) create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondWithJSON(w, http.StatusOK, newUser)
+}
+
+func (h *userHandler) find(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	user, err := h.service.FindByID(id)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	respondWithJSON(w, http.StatusOK, user)
 }

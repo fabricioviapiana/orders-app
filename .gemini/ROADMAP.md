@@ -36,7 +36,7 @@ Status:
 - [x] Configurar Docker/Postgres
 - [x] Refatorar interfaces para suportar `error`
 - [x] Implementar Auto-Migrations (Goose)
-- [ ] Criar PostgresUserRepository
+- [x] Criar PostgresUserRepository
 - [ ] Criar PostgresProductRepository
 - [ ] Criar PostgresOrderRepository
 - [ ] Tratamento de erros de banco

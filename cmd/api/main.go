@@ -51,10 +51,12 @@ func main() {
 	mux.HandleFunc("GET /products/{id}", productHandler.HandleProducts)
 
 	//User
-	userRepository := repository.NewInMemoryUserRepository()
+	userRepository := repository.NewPostgresUserRepository(db)
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
-	mux.HandleFunc("/users", userHandler.HandleUsers)
+	mux.HandleFunc("GET /users", userHandler.HandleUsers)
+	mux.HandleFunc("POST /users", userHandler.HandleUsers)
+	mux.HandleFunc("GET /users/{id}", userHandler.HandleUsers)
 
 	//Orders
 	orderRepository := repository.NewInMemoryOrderRepository()

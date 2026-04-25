@@ -43,7 +43,7 @@ func main() {
 	mux.HandleFunc("/health", healthHandler)
 
 	//Products
-	productRepository := repository.NewInMemoryProductRepository()
+	productRepository := repository.NewPostgresProductRepository(db)
 	productService := service.NewProductService(productRepository)
 	productHandler := handler.NewProductHandler(productService)
 	mux.HandleFunc("GET /products", productHandler.HandleProducts)
@@ -59,7 +59,7 @@ func main() {
 	mux.HandleFunc("GET /users/{id}", userHandler.HandleUsers)
 
 	//Orders
-	orderRepository := repository.NewInMemoryOrderRepository()
+	orderRepository := repository.NewPostgresOrderRepository(db)
 	orderService := service.NewOrderService(orderRepository, productService, userService)
 	orderHandler := handler.NewOrderHandler(orderService)
 	mux.HandleFunc("/orders", orderHandler.HandleOrders)

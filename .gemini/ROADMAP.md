@@ -37,8 +37,8 @@ Status:
 - [x] Refatorar interfaces para suportar `error`
 - [x] Implementar Auto-Migrations (Goose)
 - [x] Criar PostgresUserRepository
-- [ ] Criar PostgresProductRepository
-- [ ] Criar PostgresOrderRepository
+- [x] Criar PostgresProductRepository
+- [x] Criar PostgresOrderRepository
 - [ ] Tratamento de erros de banco
 
 ---

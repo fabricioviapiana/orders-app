@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/fabricioviapiana/orders-app/internal/config"
 	"github.com/fabricioviapiana/orders-app/internal/handler"
 	"github.com/fabricioviapiana/orders-app/internal/repository"
 	"github.com/fabricioviapiana/orders-app/internal/service"
@@ -28,15 +29,16 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	dsn := "postgres://user:password@localhost:5432/orders_db?sslmode=disable"
-	db, err := repository.NewDB(dsn)
+	cfg := config.Load()
+	db, err := repository.NewDB(cfg.DB.DSN)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
 	if err := repository.RunMigrations(db); err != nil {
-		log.Fatal(err)
+		log.Printf("error executing migrations: %v", err)
+		return
 	}
 
 	mux := http.NewServeMux()
